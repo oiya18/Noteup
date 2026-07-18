@@ -1,6 +1,5 @@
 function formatNotes(text){
 
-
 if(!text){
 
 return "No notes available.";
@@ -8,43 +7,37 @@ return "No notes available.";
 }
 
 
+// Normalize line endings
 
-// Keep line structure
-
-let formatted =
-text
-.replace(/\r/g,"")
-.trim();
+let cleaned =
+text.replace(/\r/g,"").trim();
 
 
 
+// Put numbered points on separate lines
 
-// Fix numbered points
-
-formatted =
-formatted.replace(
-/(\d+\.)/g,
-"\n\n$1"
+cleaned =
+cleaned.replace(
+/\s+(\d+\.)\s*/g,
+"\n$1 "
 );
 
 
 
+// Put bullets on separate lines
 
-// Fix bullet symbols
-
-formatted =
-formatted.replace(
-/[-•]/g,
-"\n•"
+cleaned =
+cleaned.replace(
+/\s+([-•])\s*/g,
+"\n• "
 );
 
 
 
-
-// Split lines
+// Split into lines
 
 let lines =
-formatted
+cleaned
 .split("\n")
 .map(line=>line.trim())
 .filter(line=>line.length>0);
@@ -55,30 +48,53 @@ let result = "";
 
 
 
+let currentPoint = "";
+
+
+
 lines.forEach(line=>{
 
 
-// numbered list
+// Numbered point detected
 
 if(/^\d+\./.test(line)){
 
 
-result +=
-line
-+
-"\n\n";
+// Save previous point
+
+if(currentPoint){
+
+result += currentPoint + "\n\n";
+
+}
+
+
+// Start new point
+
+currentPoint = line;
 
 
 }
 
 
-// bullet list
+// Bullet detected
 
 else if(line.startsWith("•")){
 
 
+if(currentPoint){
+
+result += currentPoint + "\n";
+
+currentPoint="";
+
+}
+
+
 result +=
-line
+"• "
++
+line.substring(1).trim()
 +
 "\n";
 
@@ -86,35 +102,21 @@ line
 }
 
 
-// headings
-
-else if(
-line.length < 50 &&
-line === line.toUpperCase()
-){
-
-
-result +=
-"\n"
-+
-line
-+
-"\n\n";
-
-
-}
-
-
-// normal text
+// Normal continuation
 
 else{
 
 
-line =
-line.charAt(0).toUpperCase()
-+
-line.slice(1);
+if(currentPoint){
 
+currentPoint +=
+" "
++
+line;
+
+}
+
+else{
 
 
 result +=
@@ -126,31 +128,40 @@ line
 }
 
 
+}
+
 
 });
 
 
 
+// Add remaining numbered point
 
-// Final cleanup
+if(currentPoint){
+
+result +=
+currentPoint;
+
+}
+
+
+
+// Clean extra spaces
 
 result =
-result.replace(
-/ +\n/g,
-"\n"
-);
-
-
-
-result =
-result.replace(
+result
+.replace(
+/ {2,}/g,
+" "
+)
+.replace(
 /\n{3,}/g,
 "\n\n"
-);
+)
+.trim();
 
 
 
-return result.trim();
-
+return result;
 
 }
