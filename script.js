@@ -268,3 +268,43 @@ createStudyGuide(notes);
 
 
 });
+
+const flashcardBtn =
+document.getElementById("flashcardBtn");
+
+
+const flashcards =
+document.getElementById("flashcards");
+
+
+
+flashcardBtn.addEventListener("click",function(){
+
+
+flashcards.innerText =
+createFlashcards(output.value);
+
+
+});
+
+
+
+
+
+const quizBtn =
+document.getElementById("quizBtn");
+
+
+const quiz =
+document.getElementById("quiz");
+
+
+
+quizBtn.addEventListener("click",function(){
+
+
+quiz.innerText =
+createQuiz(output.value);
+
+
+});
