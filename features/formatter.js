@@ -7,34 +7,36 @@ return "No notes available.";
 }
 
 
-// Normalize line endings
+// Keep original structure
 
 let cleaned =
-text.replace(/\r/g,"").trim();
+text
+.replace(/\r/g,"")
+.trim();
 
 
 
-// Put numbered points on separate lines
+// Detect numbered points
 
 cleaned =
 cleaned.replace(
 /\s+(\d+\.)\s*/g,
-"\n$1 "
+"\n\n$1 "
 );
 
 
 
-// Put bullets on separate lines
+// Detect bullet points
 
 cleaned =
 cleaned.replace(
-/\s+([-•])\s*/g,
+/\s+[-•]\s*/g,
 "\n• "
 );
 
 
 
-// Split into lines
+// Split lines
 
 let lines =
 cleaned
@@ -46,73 +48,73 @@ cleaned
 
 let result = "";
 
-
-
-let currentPoint = "";
+let currentNumber = "";
 
 
 
 lines.forEach(line=>{
 
 
-// Numbered point detected
+// Numbered item
 
 if(/^\d+\./.test(line)){
 
 
-// Save previous point
+if(currentNumber){
 
-if(currentPoint){
-
-result += currentPoint + "\n\n";
-
-}
-
-
-// Start new point
-
-currentPoint = line;
-
+result += currentNumber.trim()
++
+"\n\n";
 
 }
 
 
-// Bullet detected
+currentNumber = line;
+
+
+}
+
+
+// Bullet item
 
 else if(line.startsWith("•")){
 
 
-if(currentPoint){
+if(currentNumber){
 
-result += currentPoint + "\n";
+result += currentNumber.trim()
++
+"\n\n";
 
-currentPoint="";
+currentNumber="";
+
 
 }
 
 
 result +=
-"• "
-+
-line.substring(1).trim()
+line
 +
 "\n";
+
 
 
 }
 
 
-// Normal continuation
+// Continuation text
 
 else{
 
 
-if(currentPoint){
+if(currentNumber){
 
-currentPoint +=
+
+currentNumber +=
 " "
 +
 line;
+
 
 }
 
@@ -122,7 +124,7 @@ else{
 result +=
 line
 +
-" ";
+"\n";
 
 
 }
@@ -135,23 +137,55 @@ line
 
 
 
-// Add remaining numbered point
+// Add final numbered item
 
-if(currentPoint){
+if(currentNumber){
 
 result +=
-currentPoint;
+currentNumber.trim();
 
 }
 
 
 
-// Clean extra spaces
+// Capitalize beginnings
 
-result =
+let finalText =
 result
+.split("\n")
+.map(line=>{
+
+
+if(
+line.length>0 &&
+!line.startsWith("•") &&
+!/^\d+\./.test(line)
+){
+
+return (
+line.charAt(0).toUpperCase()
++
+line.slice(1)
+);
+
+}
+
+
+return line;
+
+
+})
+.join("\n");
+
+
+
+
+// Clean excessive spacing
+
+finalText =
+finalText
 .replace(
-/ {2,}/g,
+/[ ]{2,}/g,
 " "
 )
 .replace(
@@ -162,6 +196,7 @@ result
 
 
 
-return result;
+return finalText;
+
 
 }
