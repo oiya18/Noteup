@@ -308,3 +308,17 @@ createQuiz(output.value);
 
 
 });
+
+const formatBtn =
+document.getElementById("formatBtn");
+
+
+formatBtn.addEventListener("click",function(){
+
+
+output.value =
+formatNotes(output.value);
+
+
+
+});
