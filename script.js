@@ -353,3 +353,62 @@ savedNotes.appendChild(card);
 
 
 displaySavedNotes();
+
+displayRecentNotes();
+function displayRecentNotes(){
+
+
+const recent =
+document.getElementById("recentNotes");
+
+
+
+const notes =
+getNotes();
+
+
+
+if(notes.length===0){
+
+recent.innerText =
+"No saved notes yet.";
+
+return;
+
+}
+
+
+
+recent.innerHTML="";
+
+
+
+notes
+.slice(-3)
+.reverse()
+.forEach((note)=>{
+
+
+const card =
+document.createElement("div");
+
+
+card.className =
+"note-card";
+
+
+card.innerText =
+"📘 Saved Note\n\n"
++
+note.date;
+
+
+
+recent.appendChild(card);
+
+
+
+});
+
+
+}

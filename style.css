@@ -269,3 +269,34 @@ header{
 text-align:center;
 
 }
+
+.home-buttons{
+
+display:flex;
+
+gap:15px;
+
+justify-content:center;
+
+margin:25px 0;
+
+flex-wrap:wrap;
+
+}
+
+
+
+.home-buttons button{
+
+min-width:180px;
+
+}
+
+
+h3{
+
+text-align:center;
+
+color:#6366f1;
+
+}
