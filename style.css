@@ -145,3 +145,29 @@ border-radius:10px;
 border:1px solid #ddd;
 
 }
+
+h2{
+
+margin-top:30px;
+
+}
+
+
+
+#studyGuide,
+#flashcards,
+#quiz{
+
+background:#f3f4f6;
+
+padding:20px;
+
+border-radius:15px;
+
+margin-top:15px;
+
+white-space:pre-wrap;
+
+text-align:left;
+
+}

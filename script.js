@@ -244,3 +244,27 @@ status.innerText =
 
 
 });
+
+const studyBtn =
+document.getElementById("studyBtn");
+
+
+const studyGuide =
+document.getElementById("studyGuide");
+
+
+
+studyBtn.addEventListener("click",function(){
+
+
+const notes =
+output.value;
+
+
+
+studyGuide.innerText =
+createStudyGuide(notes);
+
+
+
+});
