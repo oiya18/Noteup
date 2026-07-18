@@ -8,17 +8,18 @@ return "No notes available.";
 }
 
 
-// Normalize spaces
+
+// Keep line structure
 
 let formatted =
 text
-.replace(/\r/g," ")
-.replace(/\s+/g," ")
+.replace(/\r/g,"")
 .trim();
 
 
 
-// Add spacing before numbered items
+
+// Fix numbered points
 
 formatted =
 formatted.replace(
@@ -28,12 +29,25 @@ formatted.replace(
 
 
 
-// Split into pieces
 
-let parts =
+// Fix bullet symbols
+
+formatted =
+formatted.replace(
+/[-•]/g,
+"\n•"
+);
+
+
+
+
+// Split lines
+
+let lines =
 formatted
 .split("\n")
-.filter(line => line.trim());
+.map(line=>line.trim())
+.filter(line=>line.length>0);
 
 
 
@@ -41,17 +55,10 @@ let result = "";
 
 
 
-parts.forEach(part=>{
+lines.forEach(line=>{
 
 
-let line =
-part.trim();
-
-
-
-//
-// Numbered list
-//
+// numbered list
 
 if(/^\d+\./.test(line)){
 
@@ -65,17 +72,13 @@ line
 }
 
 
-//
-// Bullet list
-//
+// bullet list
 
-else if(line.startsWith("-")){
+else if(line.startsWith("•")){
 
 
 result +=
-"• "
-+
-line.substring(1).trim()
+line
 +
 "\n";
 
@@ -83,9 +86,26 @@ line.substring(1).trim()
 }
 
 
-//
-// Normal sentence
-//
+// headings
+
+else if(
+line.length < 50 &&
+line === line.toUpperCase()
+){
+
+
+result +=
+"\n"
++
+line
++
+"\n\n";
+
+
+}
+
+
+// normal text
 
 else{
 
@@ -100,7 +120,7 @@ line.slice(1);
 result +=
 line
 +
-"\n\n";
+" ";
 
 
 }
@@ -108,6 +128,25 @@ line
 
 
 });
+
+
+
+
+// Final cleanup
+
+result =
+result.replace(
+/ +\n/g,
+"\n"
+);
+
+
+
+result =
+result.replace(
+/\n{3,}/g,
+"\n\n"
+);
 
 
 
