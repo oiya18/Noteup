@@ -4,9 +4,10 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Note Scanner</title>
+<title>NoteSnap</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -16,24 +17,92 @@
 <body>
 
 
-<div class="container">
+<div class="app">
 
 
-<h1>📚 Note Scanner</h1>
+<header>
+
+<h1>📚 NoteSnap</h1>
+
+
+<nav>
+
+<button onclick="showPage('home')">
+🏠 Home
+</button>
+
+
+<button onclick="showPage('scanner')">
+📷 Scanner
+</button>
+
+
+<button onclick="showPage('study')">
+🧠 Study
+</button>
+
+
+<button onclick="showPage('saved')">
+💾 Saved
+</button>
+
+
+</nav>
+
+</header>
+
+
+
+<!-- HOME -->
+
+<section id="home" class="page">
+
+
+<h2>
+Welcome to NoteSnap!
+</h2>
+
 
 <p>
-Turn handwritten notes into digital text.
+Convert notes into digital study materials.
 </p>
 
 
+<button onclick="showPage('scanner')">
+Start Scanning
+</button>
+
+
+</section>
+
+
+
+
+
+<!-- SCANNER -->
+
+
+<section id="scanner" class="page hidden">
+
+
+<h2>
+📷 Scan Notes
+</h2>
+
+
+
 <label for="imageInput" class="upload-btn">
+
 Upload Notes
+
 </label>
+
 
 <input 
 type="file"
 id="imageInput"
 accept="image/*">
+
 
 
 <img id="preview">
@@ -42,35 +111,19 @@ accept="image/*">
 
 <div class="button-group">
 
+
 <button id="convertBtn">
-Convert Notes
+Convert
 </button>
 
-
-<button id="copyBtn">
-📋 Copy
-</button>
 
 <button id="formatBtn">
-✨ Format Notes
+✨ Format
 </button>
+
 
 <button id="saveBtn">
-💾 Save Note
-</button>
-
-<button id="viewBtn">
-📂 View Saved Notes
-</button>
-
-
-<button id="downloadBtn">
-⬇ Download
-</button>
-
-
-<button id="clearBtn">
-🗑 Clear
+💾 Save
 </button>
 
 
@@ -79,68 +132,85 @@ Convert Notes
 
 
 <p id="status">
-Waiting for image...
+Waiting...
 </p>
 
 
 
-<h2>📝 Original Notes</h2>
+<textarea id="output">
 
-<textarea 
-id="output"
-placeholder="Your notes will appear here...">
 </textarea>
 
 
-<h2>📚 Study Guide</h2>
+</section>
 
-<div id="studyGuide">
 
-Your study guide will appear here.
 
-</div>
+
+
+<!-- STUDY -->
+
+
+<section id="study" class="page hidden">
+
+
+<h2>
+🧠 Study Tools
+</h2>
 
 
 <button id="studyBtn">
-
-📚 Create Study Guide
-
+Create Study Guide
 </button>
-
-
-<h2>🧠 Flashcards</h2>
-
-<div id="flashcards">
-
-Flashcards will appear here.
-
-</div>
 
 
 <button id="flashcardBtn">
-
-🧠 Create Flashcards
-
+Create Flashcards
 </button>
-
-
-<h2>❓ Quiz</h2>
-
-<div id="quiz">
-
-Quiz will appear here.
-
-</div>
 
 
 <button id="quizBtn">
-
-❓ Create Quiz
-
+Create Quiz
 </button>
 
 
+
+<div id="studyGuide"></div>
+
+<div id="flashcards"></div>
+
+<div id="quiz"></div>
+
+
+
+</section>
+
+
+
+
+
+<!-- SAVED -->
+
+
+<section id="saved" class="page hidden">
+
+
+<h2>
+💾 Saved Notes
+</h2>
+
+
+<div id="savedNotes">
+
+No saved notes.
+
 </div>
+
+
+</section>
+
+
+
 
 
 
@@ -148,12 +218,18 @@ Quiz will appear here.
 
 
 <script src="features/study.js"></script>
+
 <script src="features/flashcards.js"></script>
+
 <script src="features/quiz.js"></script>
+
 <script src="features/formatter.js"></script>
+
 <script src="features/storage.js"></script>
 
+
 <script src="script.js"></script>
+
 
 </body>
 

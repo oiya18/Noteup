@@ -1,3 +1,22 @@
+function showPage(page){
+
+const pages =
+document.querySelectorAll(".page");
+
+
+pages.forEach(p=>{
+
+p.classList.add("hidden");
+
+});
+
+
+document
+.getElementById(page)
+.classList.remove("hidden");
+
+
+}
 const imageInput =
 document.getElementById("imageInput");
 
@@ -323,23 +342,72 @@ formatNotes(output.value);
 
 });
 
-const saveBtn =
-document.getElementById("saveBtn");
+
+const savedNotes =
+document.getElementById("savedNotes");
 
 
-const viewBtn =
-document.getElementById("viewBtn");
+function displaySavedNotes(){
+
+
+const notes =
+getNotes();
 
 
 
-saveBtn.addEventListener("click",function(){
+if(notes.length===0){
+
+savedNotes.innerText =
+"No saved notes.";
+
+return;
+
+}
 
 
-saveNote(output.value);
+
+savedNotes.innerHTML =
+"";
 
 
-status.innerText =
-"Note saved!";
+notes.forEach((note,index)=>{
+
+
+const card =
+document.createElement("div");
+
+
+card.className =
+"note-card";
+
+
+card.innerText =
+"Note "
++
+(index+1)
++
+"\n\n"
++
+note.date
++
+"\n\n"
++
+note.content;
+
+
+
+savedNotes.appendChild(card);
+
+
+
+});
+
+
+}
+
+
+
+displaySavedNotes();
 
 
 });
