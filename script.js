@@ -15,8 +15,12 @@ document
 .getElementById(page)
 .classList.remove("hidden");
 
-
 }
+
+
+
+// Elements
+
 const imageInput =
 document.getElementById("imageInput");
 
@@ -29,18 +33,6 @@ const convertBtn =
 document.getElementById("convertBtn");
 
 
-const copyBtn =
-document.getElementById("copyBtn");
-
-
-const downloadBtn =
-document.getElementById("downloadBtn");
-
-
-const clearBtn =
-document.getElementById("clearBtn");
-
-
 const output =
 document.getElementById("output");
 
@@ -49,8 +41,13 @@ const status =
 document.getElementById("status");
 
 
+const saveBtn =
+document.getElementById("saveBtn");
+
+
 
 let imageFile = null;
+
 
 
 
@@ -59,7 +56,8 @@ let imageFile = null;
 imageInput.addEventListener("change", function(){
 
 
-imageFile = imageInput.files[0];
+imageFile =
+imageInput.files[0];
 
 
 if(imageFile){
@@ -92,11 +90,9 @@ convertBtn.addEventListener("click", async function(){
 
 if(!imageFile){
 
-
 alert("Please upload an image first!");
 
 return;
-
 
 }
 
@@ -120,9 +116,6 @@ imageFile,
 {
 
 logger:function(message){
-
-
-console.log(message);
 
 
 if(message.status==="recognizing text"){
@@ -161,26 +154,50 @@ status.innerText =
 
 
 
-// Copy text
+// Format notes
 
-copyBtn.addEventListener("click", function(){
+const formatBtn =
+document.getElementById("formatBtn");
 
 
-if(output.value===""){
+formatBtn.addEventListener("click",function(){
 
-alert("No text to copy!");
+
+output.value =
+formatNotes(output.value);
+
+
+});
+
+
+
+
+
+// Save notes
+
+saveBtn.addEventListener("click",function(){
+
+
+if(output.value.trim()===""){
+
+
+alert("There are no notes to save!");
 
 return;
 
+
 }
 
 
 
-navigator.clipboard.writeText(output.value);
+saveNote(output.value);
 
 
 status.innerText =
-"Copied!";
+"Note saved!";
+
+
+displaySavedNotes();
 
 
 });
@@ -189,80 +206,7 @@ status.innerText =
 
 
 
-// Download text file
-
-downloadBtn.addEventListener("click", function(){
-
-
-if(output.value===""){
-
-alert("No notes available!");
-
-return;
-
-}
-
-
-
-const file =
-new Blob(
-
-[output.value],
-
-{
-type:"text/plain"
-}
-
-);
-
-
-
-const link =
-document.createElement("a");
-
-
-link.href =
-URL.createObjectURL(file);
-
-
-link.download =
-"my-notes.txt";
-
-
-link.click();
-
-
-});
-
-
-
-
-
-// Clear everything
-
-clearBtn.addEventListener("click", function(){
-
-
-imageInput.value="";
-
-
-preview.src="";
-
-
-preview.style.display="none";
-
-
-output.value="";
-
-
-imageFile=null;
-
-
-status.innerText =
-"Waiting for image...";
-
-
-});
+// Study Guide
 
 const studyBtn =
 document.getElementById("studyBtn");
@@ -276,17 +220,17 @@ document.getElementById("studyGuide");
 studyBtn.addEventListener("click",function(){
 
 
-const notes =
-output.value;
-
-
-
 studyGuide.innerText =
-createStudyGuide(notes);
-
+createStudyGuide(output.value);
 
 
 });
+
+
+
+
+
+// Flashcards
 
 const flashcardBtn =
 document.getElementById("flashcardBtn");
@@ -310,6 +254,8 @@ createFlashcards(output.value);
 
 
 
+// Quiz
+
 const quizBtn =
 document.getElementById("quizBtn");
 
@@ -328,23 +274,15 @@ createQuiz(output.value);
 
 });
 
-const formatBtn =
-document.getElementById("formatBtn");
-
-
-formatBtn.addEventListener("click",function(){
-
-
-output.value =
-formatNotes(output.value);
 
 
 
-});
 
+// Saved Notes
 
 const savedNotes =
 document.getElementById("savedNotes");
+
 
 
 function displaySavedNotes(){
@@ -357,17 +295,20 @@ getNotes();
 
 if(notes.length===0){
 
+
 savedNotes.innerText =
 "No saved notes.";
 
+
 return;
+
 
 }
 
 
 
-savedNotes.innerHTML =
-"";
+savedNotes.innerHTML="";
+
 
 
 notes.forEach((note,index)=>{
@@ -382,22 +323,26 @@ card.className =
 
 
 card.innerText =
+
 "Note "
 +
 (index+1)
+
 +
 "\n\n"
+
 +
 note.date
+
 +
 "\n\n"
+
 +
 note.content;
 
 
 
 savedNotes.appendChild(card);
-
 
 
 });
@@ -408,45 +353,3 @@ savedNotes.appendChild(card);
 
 
 displaySavedNotes();
-
-
-});
-
-
-
-
-
-viewBtn.addEventListener("click",function(){
-
-
-const notes =
-getNotes();
-
-
-
-studyGuide.innerText =
-notes.map((note,index)=>{
-
-
-return (
-
-"Note "
-+
-(index+1)
-+
-"\n"
-+
-note.date
-+
-"\n\n"
-+
-note.content
-
-);
-
-
-}).join("\n\n----------------\n\n");
-
-
-
-});
