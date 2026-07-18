@@ -322,3 +322,63 @@ formatNotes(output.value);
 
 
 });
+
+const saveBtn =
+document.getElementById("saveBtn");
+
+
+const viewBtn =
+document.getElementById("viewBtn");
+
+
+
+saveBtn.addEventListener("click",function(){
+
+
+saveNote(output.value);
+
+
+status.innerText =
+"Note saved!";
+
+
+});
+
+
+
+
+
+viewBtn.addEventListener("click",function(){
+
+
+const notes =
+getNotes();
+
+
+
+studyGuide.innerText =
+notes.map((note,index)=>{
+
+
+return (
+
+"Note "
++
+(index+1)
++
+"\n"
++
+note.date
++
+"\n\n"
++
+note.content
+
+);
+
+
+}).join("\n\n----------------\n\n");
+
+
+
+});
