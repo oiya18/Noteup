@@ -190,7 +190,19 @@ return;
 
 
 
-saveNote(output.value);
+const title =
+document
+.getElementById("noteTitle")
+.value
+.trim();
+
+saveNote(
+
+title || "Untitled Note",
+
+output.value
+
+);
 
 
 status.innerText =
@@ -322,25 +334,21 @@ card.className =
 "note-card";
 
 
-card.innerText =
+card.innerHTML = `
 
-"Note "
-+
-(index+1)
+<h3>📘 ${note.title}</h3>
 
-+
-"\n\n"
+<p>${note.date}</p>
 
-+
-note.date
+<pre>${note.content}</pre>
 
-+
-"\n\n"
+<button onclick="deleteNote(${index})">
 
-+
-note.content;
+🗑 Delete
 
+</button>
 
+`;
 
 savedNotes.appendChild(card);
 
@@ -398,8 +406,10 @@ card.className =
 
 
 card.innerText =
-"📘 Saved Note\n\n"
-+
+"📘 " + note.title
+
+"\n\n"
+
 note.date;
 
 
@@ -410,5 +420,15 @@ recent.appendChild(card);
 
 });
 
+
+}
+
+window.deleteNote = function(index){
+
+deleteNote(index);
+
+displaySavedNotes();
+
+displayRecentNotes();
 
 }

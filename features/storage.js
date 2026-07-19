@@ -1,4 +1,4 @@
-function saveNote(text){
+function saveNote(title,text) {
 
 
 let notes =
@@ -10,6 +10,8 @@ localStorage.getItem("notes")
 
 
 notes.push({
+
+title:title,
 
 date:
 new Date().toLocaleString(),
@@ -41,5 +43,21 @@ localStorage.getItem("notes")
 )
 || [];
 
+
+}
+function deleteNote(index){
+
+let notes =
+getNotes();
+
+notes.splice(index,1);
+
+localStorage.setItem(
+
+"notes",
+
+JSON.stringify(notes)
+
+);
 
 }
