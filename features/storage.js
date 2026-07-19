@@ -45,19 +45,28 @@ localStorage.getItem("notes")
 
 
 }
-function deleteNote(index){
+function removeNote(index){
 
-let notes =
-getNotes();
+let notes = getNotes();
 
 notes.splice(index,1);
 
 localStorage.setItem(
-
 "notes",
-
 JSON.stringify(notes)
+);
 
+}
+
+function renameNote(index, newTitle){
+
+let notes = getNotes();
+
+notes[index].title = newTitle;
+
+localStorage.setItem(
+"notes",
+JSON.stringify(notes)
 );
 
 }

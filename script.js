@@ -342,10 +342,12 @@ card.innerHTML = `
 
 <pre>${note.content}</pre>
 
+<button onclick="renameSavedNote(${index})">
+✏ Rename
+</button>
+
 <button onclick="deleteNote(${index})">
-
 🗑 Delete
-
 </button>
 
 `;
@@ -425,10 +427,31 @@ recent.appendChild(card);
 
 window.deleteNote = function(index){
 
-deleteNote(index);
+removeNote(index);
 
 displaySavedNotes();
 
 displayRecentNotes();
+
+}
+
+window.renameSavedNote = function(index){
+
+const notes = getNotes();
+
+const newTitle = prompt(
+"Enter a new title:",
+notes[index].title
+);
+
+if(newTitle && newTitle.trim() !== ""){
+
+renameNote(index,newTitle.trim());
+
+displaySavedNotes();
+
+displayRecentNotes();
+
+}
 
 }
