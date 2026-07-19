@@ -1,31 +1,21 @@
-function saveNote(title,text) {
+function saveNote(title,text){
 
-
-let notes =
-JSON.parse(
-localStorage.getItem("notes")
-)
-|| [];
-
-
+let notes = getNotes();
 
 notes.push({
 
 title:title,
 
-date:
-new Date().toLocaleString(),
+date:new Date().toLocaleString(),
 
 content:text
 
 });
 
 
-
 localStorage.setItem(
 "notes",
 JSON.stringify(notes)
-
 );
 
 
@@ -33,18 +23,16 @@ JSON.stringify(notes)
 
 
 
-
-
 function getNotes(){
-
 
 return JSON.parse(
 localStorage.getItem("notes")
-)
-|| [];
-
+) || [];
 
 }
+
+
+
 function removeNote(index){
 
 let notes = getNotes();
@@ -58,11 +46,15 @@ JSON.stringify(notes)
 
 }
 
-function renameNote(index, newTitle){
+
+
+function renameNote(index,newTitle){
 
 let notes = getNotes();
 
-notes[index].title = newTitle;
+notes[index].title =
+newTitle;
+
 
 localStorage.setItem(
 "notes",
