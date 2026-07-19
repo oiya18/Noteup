@@ -24,6 +24,10 @@
 
 <h1>📚 NoteSnap</h1>
 
+<p>
+Your Digital Study Companion
+</p>
+
 
 <nav>
 
@@ -49,23 +53,21 @@
 
 </nav>
 
+
 </header>
 
 
 
-<!-- HOME -->
+
+
+<!-- HOME PAGE -->
 
 <section id="home" class="page">
 
 
 <h2>
-📚 NoteSnap
+Welcome to NoteSnap!
 </h2>
-
-
-<h3>
-Your Digital Study Companion
-</h3>
 
 
 <p>
@@ -87,7 +89,6 @@ digital study materials.
 </button>
 
 
-
 <button onclick="showPage('saved')">
 
 💾 My Notes
@@ -99,10 +100,10 @@ digital study materials.
 
 
 
+
 <h2>
 Recent Notes
 </h2>
-
 
 
 <div id="recentNotes">
@@ -112,40 +113,55 @@ No saved notes yet.
 </div>
 
 
-
 </section>
 
 
 
 
 
-<!-- SCANNER -->
 
+
+
+<!-- SCANNER PAGE -->
 
 <section id="scanner" class="page hidden">
 
 
 <h2>
-📷 Scan Notes
+📷 Note Scanner
 </h2>
 
 
 
-<label for="imageInput" class="upload-btn">
+<input
+type="text"
+id="noteTitle"
+placeholder="Note title (Example: Biology Chapter 5)"
+>
 
-Upload Notes
+
+
+<label
+for="imageInput"
+class="upload-btn"
+>
+
+Upload Notes Image
 
 </label>
 
 
-<input 
+<input
 type="file"
 id="imageInput"
-accept="image/*">
+accept="image/*"
+>
 
 
 
-<img id="preview">
+<img
+id="preview"
+>
 
 
 
@@ -153,17 +169,23 @@ accept="image/*">
 
 
 <button id="convertBtn">
+
 Convert
+
 </button>
 
 
 <button id="formatBtn">
+
 ✨ Format
+
 </button>
 
 
 <button id="saveBtn">
+
 💾 Save
+
 </button>
 
 
@@ -172,17 +194,18 @@ Convert
 
 
 <p id="status">
-Waiting...
+
+Waiting for image...
+
 </p>
 
-<input
-type="text"
-id="noteTitle"
-placeholder="Enter a title (Example: Biology Chapter 5)">
 
-<textarea id="output">
 
-</textarea>
+<textarea
+id="output"
+placeholder="Your converted notes will appear here..."
+></textarea>
+
 
 
 </section>
@@ -191,8 +214,10 @@ placeholder="Enter a title (Example: Biology Chapter 5)">
 
 
 
-<!-- STUDY -->
 
+
+
+<!-- STUDY PAGE -->
 
 <section id="study" class="page hidden">
 
@@ -203,27 +228,40 @@ placeholder="Enter a title (Example: Biology Chapter 5)">
 
 
 <button id="studyBtn">
-Create Study Guide
+
+📚 Create Study Guide
+
 </button>
 
 
 <button id="flashcardBtn">
-Create Flashcards
+
+📝 Create Flashcards
+
 </button>
 
 
 <button id="quizBtn">
-Create Quiz
+
+❓ Create Quiz
+
 </button>
 
 
 
-<div id="studyGuide"></div>
+<div id="studyGuide">
 
-<div id="flashcards"></div>
+</div>
 
-<div id="quiz"></div>
 
+<div id="flashcards">
+
+</div>
+
+
+<div id="quiz">
+
+</div>
 
 
 </section>
@@ -232,7 +270,10 @@ Create Quiz
 
 
 
-<!-- SAVED -->
+
+
+
+<!-- SAVED PAGE -->
 
 
 <section id="saved" class="page hidden">
@@ -245,7 +286,7 @@ Create Quiz
 
 <div id="savedNotes">
 
-No saved notes.
+No saved notes yet.
 
 </div>
 
@@ -257,8 +298,22 @@ No saved notes.
 
 
 
+
+
+<!-- Libraries -->
+
+
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
+
+
+
+<!-- Features -->
+
+
+<script src="features/storage.js"></script>
+
+<script src="features/formatter.js"></script>
 
 <script src="features/study.js"></script>
 
@@ -266,14 +321,16 @@ No saved notes.
 
 <script src="features/quiz.js"></script>
 
-<script src="features/formatter.js"></script>
 
-<script src="features/storage.js"></script>
+
+
+<!-- Main -->
 
 
 <script src="script.js"></script>
 
 
 </body>
+
 
 </html>
