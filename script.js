@@ -68,6 +68,12 @@ document.getElementById("formatBtn");
 
 const saveBtn =
 document.getElementById("saveBtn");
+const exportTxtBtn =
+document.getElementById("exportTxtBtn");
+
+
+const exportPdfBtn =
+document.getElementById("exportPdfBtn");
 
 
 const output =
@@ -2443,3 +2449,184 @@ function displayHomeFavorites(){
 displayFavorites();
 
 displayHomeFavorites();
+// ========================================
+// Export TXT
+// ========================================
+
+
+if(exportTxtBtn){
+
+
+exportTxtBtn.onclick=function(){
+
+
+
+    if(output.value.trim()===""){
+
+
+        alert("No notes available.");
+
+        return;
+
+    }
+
+
+
+
+
+    const file =
+
+    new Blob(
+
+        [output.value],
+
+        {
+
+        type:"text/plain"
+
+        }
+
+    );
+
+
+
+
+
+    const link =
+
+    document.createElement("a");
+
+
+
+    link.href =
+
+    URL.createObjectURL(file);
+
+
+
+    link.download =
+
+    (noteTitle.value || "NoteUp-note")
+
+    + ".txt";
+
+
+
+    link.click();
+
+
+
+};
+
+
+}
+// ========================================
+// Export PDF
+// ========================================
+
+
+if(exportPdfBtn){
+
+
+exportPdfBtn.onclick=function(){
+
+
+
+    if(output.value.trim()===""){
+
+
+        alert("No notes available.");
+
+        return;
+
+
+    }
+
+
+
+
+    const { jsPDF } = window.jspdf;
+
+
+
+    const pdf =
+
+    new jsPDF();
+
+
+
+
+
+    const title =
+
+    noteTitle.value ||
+
+    "NoteUp Note";
+
+
+
+
+
+    pdf.setFontSize(16);
+
+
+    pdf.text(
+
+        title,
+
+        10,
+
+        20
+
+    );
+
+
+
+
+
+    pdf.setFontSize(12);
+
+
+
+
+
+    const lines =
+
+    pdf.splitTextToSize(
+
+        output.value,
+
+        180
+
+    );
+
+
+
+
+
+    pdf.text(
+
+        lines,
+
+        10,
+
+        35
+
+    );
+
+
+
+
+
+    pdf.save(
+
+        title + ".pdf"
+
+    );
+
+
+
+};
+
+
+}
