@@ -1,23 +1,33 @@
-function saveNote(title,text){
+function saveNote(title, content){
 
-let notes = getNotes();
+    let notes = getNotes();
 
-notes.push({
+    const now = new Date().toLocaleString();
 
-title:title,
+    notes.push({
 
-date:new Date().toLocaleString(),
+        id: Date.now(),
 
-content:text
+        title: title,
 
-});
+        folder: "General",
 
+        tags: [],
 
-localStorage.setItem(
-"notes",
-JSON.stringify(notes)
-);
+        favorite: false,
 
+        created: now,
+
+        edited: now,
+
+        content: content
+
+    });
+
+    localStorage.setItem(
+        "notes",
+        JSON.stringify(notes)
+    );
 
 }
 
@@ -25,12 +35,30 @@ JSON.stringify(notes)
 
 function getNotes(){
 
-return JSON.parse(
-localStorage.getItem("notes")
-) || [];
+    const notes =
+        JSON.parse(localStorage.getItem("notes")) || [];
+
+    return notes.map(note=>({
+
+        id: note.id || Date.now() + Math.random(),
+
+        title: note.title || "Untitled Note",
+
+        folder: note.folder || "General",
+
+        tags: note.tags || [],
+
+        favorite: note.favorite || false,
+
+        created: note.created || note.date || "Unknown",
+
+        edited: note.edited || note.date || "Unknown",
+
+        content: note.content || ""
+
+    }));
 
 }
-
 
 
 function removeNote(index){
@@ -50,15 +78,16 @@ JSON.stringify(notes)
 
 function renameNote(index,newTitle){
 
-let notes = getNotes();
+    let notes = getNotes();
 
-notes[index].title =
-newTitle;
+    notes[index].title = newTitle;
 
+    notes[index].edited =
+        new Date().toLocaleString();
 
-localStorage.setItem(
-"notes",
-JSON.stringify(notes)
-);
+    localStorage.setItem(
+        "notes",
+        JSON.stringify(notes)
+    );
 
 }

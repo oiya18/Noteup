@@ -433,14 +433,13 @@ card.innerHTML = `
 </h3>
 
 
-<p>
-${note.date}
-</p>
+<p>📁 ${note.folder}</p>
 
+<p>Created: ${note.created}</p>
 
-<p>
-${note.content.length} characters
-</p>
+<p>Edited: ${note.edited}</p>
+
+<p>${note.content.length} characters</p>
 
 
 <div class="card-buttons">
