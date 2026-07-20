@@ -61,19 +61,25 @@ function getNotes(){
 }
 
 
-function removeNote(index){
+function removeNote(id){
 
 let notes = getNotes();
 
-notes.splice(index,1);
+notes = notes.filter(
+
+note=>note.id!==id
+
+);
 
 localStorage.setItem(
+
 "notes",
+
 JSON.stringify(notes)
+
 );
 
 }
-
 
 
 function renameNote(index,newTitle){
@@ -89,5 +95,42 @@ function renameNote(index,newTitle){
         "notes",
         JSON.stringify(notes)
     );
+
+}
+
+function getNoteById(id){
+
+return getNotes().find(
+
+note=>note.id===id
+
+);
+
+}
+function updateNote(id,newNote){
+
+let notes = getNotes();
+
+notes = notes.map(note=>
+
+note.id===id
+
+?
+
+newNote
+
+:
+
+note
+
+);
+
+localStorage.setItem(
+
+"notes",
+
+JSON.stringify(notes)
+
+);
 
 }

@@ -2,6 +2,20 @@
 // Navigation
 // ===============================
 
+const searchInput =
+document.getElementById("searchInput");
+
+searchInput.addEventListener(
+
+"input",
+
+function(){
+
+displaySavedNotes();
+
+}
+
+);
 
 function showPage(page){
 
@@ -396,9 +410,34 @@ document.getElementById("savedNotes");
 function displaySavedNotes(){
 
 
-const notes =
-getNotes();
+const search =
+searchInput.value
+.toLowerCase();
 
+const notes =
+getNotes().filter(note=>{
+
+return(
+
+note.title.toLowerCase().includes(search)
+
+||
+
+note.folder.toLowerCase().includes(search)
+
+||
+
+note.content.toLowerCase().includes(search)
+
+||
+
+note.tags.join(" ")
+.toLowerCase()
+.includes(search)
+
+);
+
+});
 
 
 if(notes.length===0){
@@ -452,7 +491,7 @@ card.innerHTML = `
 <div class="card-buttons">
 
 
-<button onclick="openNote(${index})">
+<button onclick="openNote(${note.id})">
 
 📖 Open
 
@@ -460,7 +499,7 @@ card.innerHTML = `
 
 
 
-<button onclick="renameSavedNote(${index})">
+<button onclick="renameSavedNote(${note.id})">
 
 ✏ Rename
 
@@ -468,7 +507,7 @@ card.innerHTML = `
 
 
 
-<button onclick="deleteNote(${index})">
+<button onclick="deleteNote(${note.id})">
 
 🗑 Delete
 
@@ -580,7 +619,7 @@ card.onclick =
 function(){
 
 
-openNote(index);
+openNote(note.id);
 
 
 };
@@ -619,7 +658,8 @@ getNotes();
 
 
 const note =
-notes[index];
+
+getNoteById(id);
 
 
 
@@ -660,7 +700,7 @@ window.deleteNote =
 function(index){
 
 
-removeNote(index);
+removeNote(id);
 
 
 
@@ -709,13 +749,8 @@ newTitle.trim() !== ""
 ){
 
 
-renameNote(
-
-index,
-
-newTitle.trim()
-
-);
+const note =
+getNoteById(id);
 
 
 
