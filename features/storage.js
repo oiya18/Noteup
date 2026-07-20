@@ -1,136 +1,507 @@
-function saveNote(title, folder, content){
-
-    let notes = getNotes();
-
-    const now = new Date().toLocaleString();
-
-    notes.push({
-
-        id: Date.now(),
-
-        title: title,
-
-        folder: folder,
-
-        tags: [],
-
-        favorite: false,
-
-        created: now,
-
-        edited: now,
-
-        content: content
-
-    });
-
-    localStorage.setItem(
-        "notes",
-        JSON.stringify(notes)
-    );
-
-}
+// ========================================
+// NoteUp v2.0
+// Storage Manager
+// ========================================
 
 
+const STORAGE_KEY = "noteup_notes";
+
+
+// ========================================
+// Get All Notes
+// ========================================
 
 function getNotes(){
 
     const notes =
-        JSON.parse(localStorage.getItem("notes")) || [];
+        JSON.parse(
+            localStorage.getItem(STORAGE_KEY)
+        );
 
-    return notes.map(note=>({
+    if(!notes){
 
-        id: note.id || Date.now() + Math.random(),
+        return [];
 
-        title: note.title || "Untitled Note",
+    }
 
-        folder: note.folder || "General",
 
-        tags: note.tags || [],
-
-        favorite: note.favorite || false,
-
-        created: note.created || note.date || "Unknown",
-
-        edited: note.edited || note.date || "Unknown",
-
-        content: note.content || ""
-
-    }));
+    return notes;
 
 }
 
 
-function removeNote(id){
-
-let notes = getNotes();
-
-notes = notes.filter(
-
-note=>note.id!==id
-
-);
-
-localStorage.setItem(
-
-"notes",
-
-JSON.stringify(notes)
-
-);
-
-}
 
 
-function renameNote(index,newTitle){
+// ========================================
+// Save Notes Array
+// ========================================
 
-    let notes = getNotes();
-
-    notes[index].title = newTitle;
-
-    notes[index].edited =
-        new Date().toLocaleString();
+function saveNotes(notes){
 
     localStorage.setItem(
-        "notes",
+
+        STORAGE_KEY,
+
         JSON.stringify(notes)
+
     );
 
 }
 
-function getNoteById(id){
 
-return getNotes().find(
 
-note=>note.id===id
 
-);
+// ========================================
+// Create New Note
+// ========================================
+
+function saveNote(title, folder, content){
+
+
+    const notes =
+        getNotes();
+
+
+    const now =
+        new Date().toLocaleString();
+
+
+
+    const newNote = {
+
+
+        id:
+        crypto.randomUUID(),
+
+
+        title:
+        title || "Untitled Note",
+
+
+        folder:
+        folder || "General",
+
+
+        tags:
+        [],
+
+
+        favorite:
+        false,
+
+
+        created:
+        now,
+
+
+        edited:
+        now,
+
+
+        content:
+        content || ""
+
+    };
+
+
+
+    notes.unshift(newNote);
+
+
+
+    saveNotes(notes);
+
+
+
+    return newNote;
 
 }
-function updateNote(id,newNote){
 
-let notes = getNotes();
 
-notes = notes.map(note=>
 
-note.id===id
 
-?
 
-newNote
 
-:
+// ========================================
+// Find Note By ID
+// ========================================
 
-note
+function getNoteById(id){
 
-);
 
-localStorage.setItem(
+    return getNotes().find(
 
-"notes",
+        note =>
+        note.id === id
 
-JSON.stringify(notes)
+    );
 
-);
+
+}
+
+
+
+
+
+
+
+// ========================================
+// Update Note
+// ========================================
+
+function updateNote(id, updates){
+
+
+    const notes =
+        getNotes();
+
+
+
+    const index =
+        notes.findIndex(
+
+            note =>
+            note.id === id
+
+        );
+
+
+
+    if(index === -1){
+
+        return;
+
+    }
+
+
+
+    notes[index] = {
+
+
+        ...notes[index],
+
+
+        ...updates,
+
+
+        edited:
+        new Date().toLocaleString()
+
+
+    };
+
+
+
+    saveNotes(notes);
+
+
+}
+
+
+
+
+
+
+
+
+// ========================================
+// Rename Note
+// ========================================
+
+function renameNote(id,newTitle){
+
+
+    updateNote(
+
+        id,
+
+        {
+
+            title:
+            newTitle
+
+        }
+
+    );
+
+}
+
+
+
+
+
+
+
+// ========================================
+// Delete Note
+// ========================================
+
+function removeNote(id){
+
+
+    const notes =
+        getNotes().filter(
+
+            note =>
+            note.id !== id
+
+        );
+
+
+
+    saveNotes(notes);
+
+
+}
+
+
+
+
+
+
+
+// ========================================
+// Toggle Favorite
+// ========================================
+
+function toggleFavorite(id){
+
+
+    const note =
+        getNoteById(id);
+
+
+
+    if(!note){
+
+        return;
+
+    }
+
+
+
+    updateNote(
+
+        id,
+
+        {
+
+            favorite:
+            !note.favorite
+
+        }
+
+    );
+
+
+}
+
+
+
+
+
+
+
+// ========================================
+// Search Notes
+// ========================================
+
+function searchNotes(query){
+
+
+    query =
+    query
+    .toLowerCase()
+    .trim();
+
+
+
+    if(query === ""){
+
+        return getNotes();
+
+    }
+
+
+
+    return getNotes().filter(note=>{
+
+
+        return (
+
+            note.title
+            .toLowerCase()
+            .includes(query)
+
+
+
+            ||
+
+            note.folder
+            .toLowerCase()
+            .includes(query)
+
+
+
+            ||
+
+            note.content
+            .toLowerCase()
+            .includes(query)
+
+
+
+            ||
+
+            note.tags
+            .join(" ")
+            .toLowerCase()
+            .includes(query)
+
+
+        );
+
+
+    });
+
+
+}
+
+
+
+
+
+
+
+// ========================================
+// Get All Folders
+// ========================================
+
+function getFolders(){
+
+
+    const folders =
+
+    getNotes()
+
+    .map(
+
+        note =>
+        note.folder
+
+    );
+
+
+
+    return [
+
+        ...new Set(folders)
+
+    ];
+
+
+}
+
+
+
+
+
+
+
+// ========================================
+// Add Tag
+// ========================================
+
+function addTag(id,tag){
+
+
+    const note =
+    getNoteById(id);
+
+
+
+    if(!note){
+
+        return;
+
+    }
+
+
+
+    if(
+        !note.tags.includes(tag)
+    ){
+
+        note.tags.push(tag);
+
+    }
+
+
+
+    updateNote(
+
+        id,
+
+        {
+
+            tags:
+            note.tags
+
+        }
+
+    );
+
+
+}
+
+
+
+
+
+
+
+// ========================================
+// Remove Tag
+// ========================================
+
+function removeTag(id,tag){
+
+
+    const note =
+    getNoteById(id);
+
+
+
+    if(!note){
+
+        return;
+
+    }
+
+
+
+    note.tags =
+    note.tags.filter(
+
+        t =>
+        t !== tag
+
+    );
+
+
+
+    updateNote(
+
+        id,
+
+        {
+
+            tags:
+            note.tags
+
+        }
+
+    );
+
 
 }
