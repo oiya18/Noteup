@@ -1,4 +1,4 @@
-function saveNote(title, content){
+function saveNote(title, folder, content){
 
     let notes = getNotes();
 
@@ -10,7 +10,7 @@ function saveNote(title, content){
 
         title: title,
 
-        folder: "General",
+        folder: folder,
 
         tags: [],
 

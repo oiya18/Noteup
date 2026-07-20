@@ -268,9 +268,16 @@ noteTitle.value.trim();
 
 
 
+const folder =
+document
+.getElementById("folderSelect")
+.value;
+
 saveNote(
 
 title || "Untitled Note",
+
+folder,
 
 output.value
 
