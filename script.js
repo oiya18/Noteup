@@ -795,7 +795,11 @@ function displaySavedNotes(){
 
 
 
+<button class="move-btn">
 
+📁 Move
+
+</button>
 
         <button class="favorite-btn">
 
@@ -886,7 +890,17 @@ function displaySavedNotes(){
 
 
 
+const moveBtn =
+card.querySelector(".move-btn");
 
+
+moveBtn.onclick=function(){
+
+
+    changeNoteFolder(note.id);
+
+
+};
 
 
         const favoriteBtn =
@@ -1760,6 +1774,13 @@ document.getElementById("createFolderBtn");
 
 // Display folders
 
+// ========================================
+// NoteUp v2.1
+// Folder System Final
+// ========================================
+
+
+
 function displayFolders(){
 
 
@@ -1768,6 +1789,7 @@ function displayFolders(){
         return;
 
     }
+
 
 
     const folders =
@@ -1782,17 +1804,70 @@ function displayFolders(){
     folders.forEach(folder=>{
 
 
-        const button =
-        document.createElement("button");
+        const count =
+
+        getNotes().filter(
+
+            note =>
+
+            note.folder === folder
+
+        ).length;
 
 
 
-        button.innerText =
-        "📁 " + folder;
+        const container =
+
+        document.createElement("div");
 
 
 
-        button.onclick = function(){
+        container.className =
+        "folder-card";
+
+
+
+        container.innerHTML = `
+
+
+        <button class="folder-open">
+
+        📁 ${folder}
+
+        (${count})
+
+        </button>
+
+
+        ${
+            folder !== "General"
+
+            ?
+
+            `<button class="folder-delete">
+            
+            🗑
+
+            </button>`
+
+            :
+
+            ""
+
+        }
+
+
+        `;
+
+
+
+
+
+        container
+
+        .querySelector(".folder-open")
+
+        .onclick=function(){
 
 
             filterByFolder(folder);
@@ -1802,7 +1877,42 @@ function displayFolders(){
 
 
 
-        folderList.appendChild(button);
+
+
+        if(folder !== "General"){
+
+
+            container
+
+            .querySelector(".folder-delete")
+
+            .onclick=function(){
+
+
+                deleteFolder(folder);
+
+
+
+                displayFolders();
+
+
+                displaySavedNotes();
+
+
+                updateFolderDropdown();
+
+
+
+            };
+
+
+        }
+
+
+
+
+        folderList.appendChild(container);
+
 
 
     });
@@ -1811,6 +1921,66 @@ function displayFolders(){
 }
 
 
+
+
+
+
+// ========================================
+// Move Note Folder
+// ========================================
+
+
+function changeNoteFolder(id){
+
+
+    const folders =
+    getFolders();
+
+
+
+    const choice =
+
+    prompt(
+
+    "Move to folder:\n\n"
+
+    +
+
+    folders.join("\n")
+
+    );
+
+
+
+    if(
+
+    choice &&
+
+    folders.includes(choice)
+
+    ){
+
+
+        moveNoteToFolder(
+
+            id,
+
+            choice
+
+        );
+
+
+
+        displaySavedNotes();
+
+
+        displayRecentNotes();
+
+
+    }
+
+
+}
 
 
 
