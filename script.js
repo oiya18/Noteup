@@ -1,50 +1,53 @@
-// ===============================
+// ========================================
+// NoteUp v2.0
+// Main Script
+// Part 1/3
+// ========================================
+
+
+
+// ========================================
 // Navigation
-// ===============================
-
-const searchInput =
-document.getElementById("searchInput");
-
-
-if(searchInput){
-
-searchInput.addEventListener(
-"input",
-function(){
-
-displaySavedNotes();
-
-});
-
-}
-
+// ========================================
 
 
 function showPage(page){
 
 
-const pages =
-document.querySelectorAll(".page");
+    const pages =
+    document.querySelectorAll(".page");
 
 
-pages.forEach(p=>{
+    pages.forEach(p=>{
 
-p.classList.add("hidden");
+        p.classList.add("hidden");
 
-});
+    });
 
 
-document
-.getElementById(page)
-.classList.remove("hidden");
+
+    const selected =
+    document.getElementById(page);
+
+
+
+    if(selected){
+
+        selected.classList.remove("hidden");
+
+    }
 
 
 }
 
 
-// ===============================
+
+
+
+
+// ========================================
 // Elements
-// ===============================
+// ========================================
 
 
 const imageInput =
@@ -79,250 +82,409 @@ const noteTitle =
 document.getElementById("noteTitle");
 
 
+const folderSelect =
+document.getElementById("folderSelect");
+
+
 
 let imageFile = null;
 
 
 
+// Used when editing later
+
+let currentNoteId = null;
 
 
-// ===============================
+
+
+
+
+
+
+// ========================================
 // Upload Image
-// ===============================
+// ========================================
+
+
+if(imageInput){
 
 
 imageInput.addEventListener(
+
 "change",
+
 function(){
 
 
-imageFile =
-imageInput.files[0];
+    imageFile =
+    imageInput.files[0];
 
 
-if(imageFile){
+
+    if(imageFile){
 
 
-preview.src =
-URL.createObjectURL(imageFile);
+        preview.src =
+        URL.createObjectURL(imageFile);
 
 
-preview.style.display =
-"block";
+
+        preview.style.display =
+        "block";
 
 
-status.innerText =
-"Image uploaded!";
+
+        status.innerText =
+        "Image uploaded!";
+
+
+    }
 
 
 }
 
 
-});
+);
+
+
+}
 
 
 
 
 
-// ===============================
+
+
+
+// ========================================
 // OCR Conversion
-// ===============================
+// ========================================
+
+
+if(convertBtn){
 
 
 convertBtn.addEventListener(
+
 "click",
+
 async function(){
 
 
-if(!imageFile){
+
+    if(!imageFile){
 
 
-alert(
-"Please upload an image first!"
+        alert(
+        "Please upload an image first!"
+        );
+
+
+        return;
+
+
+    }
+
+
+
+
+    status.innerText =
+    "Reading notes...";
+
+
+
+    output.value = "";
+
+
+
+
+    try{
+
+
+        const result =
+
+        await Tesseract.recognize(
+
+
+            imageFile,
+
+
+            "eng",
+
+
+            {
+
+
+            logger:function(message){
+
+
+
+                if(
+
+                message.status ===
+
+                "recognizing text"
+
+                ){
+
+
+                    status.innerText =
+
+                    "Progress: "
+
+                    +
+
+                    Math.round(
+
+                    message.progress * 100
+
+                    )
+
+                    +
+
+                    "%";
+
+
+                }
+
+
+            }
+
+
+            }
+
+
+        );
+
+
+
+        output.value =
+        result.data.text;
+
+
+
+        status.innerText =
+        "Finished!";
+
+
+    }
+
+
+
+    catch(error){
+
+
+        console.log(error);
+
+
+        status.innerText =
+        "OCR failed.";
+
+
+    }
+
+
+
+}
+
+
 );
 
 
-return;
-
-
 }
 
 
 
-status.innerText =
-"Reading notes...";
-
-
-output.value = "";
-
-
-
-try{
-
-
-const result =
-await Tesseract.recognize(
-
-imageFile,
-
-"eng",
-
-{
-
-
-logger:function(message){
-
-
-if(
-message.status ===
-"recognizing text"
-){
-
-
-status.innerText =
-"Progress: "
-+
-Math.round(
-message.progress*100
-)
-+
-"%";
-
-
-}
-
-
-}
-
-
-}
-
-);
-
-
-
-output.value =
-result.data.text;
-
-
-
-status.innerText =
-"Finished!";
-
-
-}
-
-catch(error){
-
-
-console.log(error);
-
-
-status.innerText =
-"OCR failed.";
-
-
-}
-
-
-});
 
 
 
 
 
 
-// ===============================
+// ========================================
 // Format Notes
-// ===============================
+// ========================================
+
+
+if(formatBtn){
 
 
 formatBtn.addEventListener(
+
 "click",
+
 function(){
 
 
-output.value =
-formatNotes(output.value);
+    output.value =
+
+    formatNotes(
+
+        output.value
+
+    );
 
 
-});
+}
 
 
-
-
-
-
-
-// ===============================
-// Save Notes
-// ===============================
-
-
-saveBtn.addEventListener(
-"click",
-function(){
-
-
-
-if(output.value.trim()===""){
-
-
-alert(
-"There are no notes to save!"
 );
-
-
-return;
 
 
 }
 
 
 
-const title =
-noteTitle.value.trim();
 
 
 
-const folder =
-document
-.getElementById("folderSelect")
-.value;
 
-saveNote(
 
-title || "Untitled Note",
+// ========================================
+// Save Notes
+// ========================================
 
-folder,
 
-output.value
+if(saveBtn){
+
+
+saveBtn.addEventListener(
+
+"click",
+
+function(){
+
+
+
+    if(output.value.trim()===""){
+
+
+        alert(
+
+        "There are no notes to save!"
+
+        );
+
+
+        return;
+
+
+    }
+
+
+
+
+    const title =
+
+    noteTitle.value.trim();
+
+
+
+    const folder =
+
+    folderSelect.value;
+
+
+
+
+
+    // Editing existing note
+
+    if(currentNoteId){
+
+
+
+        updateNote(
+
+            currentNoteId,
+
+
+            {
+
+
+            title:
+            title || "Untitled Note",
+
+
+
+            folder:
+            folder,
+
+
+
+            content:
+            output.value
+
+
+            }
+
+
+        );
+
+
+
+        status.innerText =
+        "Note updated!";
+
+
+
+    }
+
+
+
+    else{
+
+
+
+        saveNote(
+
+            title || "Untitled Note",
+
+            folder,
+
+            output.value
+
+
+        );
+
+
+
+        status.innerText =
+        "Note saved!";
+
+
+    }
+
+
+
+    currentNoteId = null;
+
+
+    displaySavedNotes();
+
+    displayRecentNotes();
+
+
+
+}
+
 
 );
 
 
-
-status.innerText =
-"Note saved!";
-
-
-
-displaySavedNotes();
-
-displayRecentNotes();
-
-
-
-});
+}
 
 
 
 
 
 
-// ===============================
+
+
+// ========================================
 // Study Tools
-// ===============================
+// ========================================
 
 
 const studyBtn =
@@ -334,16 +496,34 @@ document.getElementById("studyGuide");
 
 
 
+if(studyBtn){
+
+
 studyBtn.addEventListener(
+
 "click",
+
 function(){
 
 
-studyGuide.innerText =
-createStudyGuide(output.value);
+    studyGuide.innerText =
+
+    createStudyGuide(
+
+        output.value
+
+    );
 
 
-});
+}
+
+
+);
+
+
+}
+
+
 
 
 
@@ -358,16 +538,33 @@ document.getElementById("flashcards");
 
 
 
+if(flashcardBtn){
+
+
 flashcardBtn.addEventListener(
+
 "click",
+
 function(){
 
 
-flashcards.innerText =
-createFlashcards(output.value);
+    flashcards.innerText =
+
+    createFlashcards(
+
+        output.value
+
+    );
 
 
-});
+}
+
+
+);
+
+
+}
+
 
 
 
@@ -383,154 +580,382 @@ document.getElementById("quiz");
 
 
 
+if(quizBtn){
+
+
 quizBtn.addEventListener(
+
 "click",
+
 function(){
 
 
-quiz.innerText =
-createQuiz(output.value);
+    quiz.innerText =
+
+    createQuiz(
+
+        output.value
+
+    );
 
 
-});
+}
+
+
+);
+
+
+}
+// ========================================
+// NoteUp v2.0
+// Saved Notes System
+// Part 2/3
+// ========================================
 
 
 
 
-
-
-
-// ===============================
-// Saved Notes Display
-// ===============================
+// ========================================
+// Saved Notes Elements
+// ========================================
 
 
 const savedNotes =
 document.getElementById("savedNotes");
 
 
+const searchInput =
+document.getElementById("searchInput");
+
+
+
+
+
+
+// ========================================
+// Display Saved Notes
+// ========================================
+
 
 function displaySavedNotes(){
 
 
-const search =
-searchInput.value
-.toLowerCase();
+    if(!savedNotes){
 
-const notes =
-getNotes().filter(note=>{
+        return;
 
-return(
+    }
 
-note.title.toLowerCase().includes(search)
 
-||
 
-note.folder.toLowerCase().includes(search)
 
-||
+    let notes;
 
-note.content.toLowerCase().includes(search)
 
-||
 
-note.tags.join(" ")
-.toLowerCase()
-.includes(search)
+    if(searchInput && searchInput.value.trim() !== ""){
+
+
+        notes =
+        searchNotes(
+            searchInput.value
+        );
+
+
+    }
+
+
+    else{
+
+
+        notes =
+        getNotes();
+
+
+    }
+
+
+
+
+
+    if(notes.length === 0){
+
+
+        savedNotes.innerHTML =
+
+        "<p>No saved notes.</p>";
+
+
+        return;
+
+
+    }
+
+
+
+
+
+
+    savedNotes.innerHTML = "";
+
+
+
+
+
+
+    notes.forEach(note=>{
+
+
+
+        const card =
+
+        document.createElement("div");
+
+
+
+        card.className =
+        "note-card";
+
+
+
+
+
+
+        card.innerHTML = `
+
+
+
+        <h3>
+
+        ${note.favorite ? "⭐" : "📘"}
+
+        ${note.title}
+
+        </h3>
+
+
+
+        <p>
+
+        📁 ${note.folder}
+
+        </p>
+
+
+
+        <p>
+
+        Created:
+
+        ${note.created}
+
+        </p>
+
+
+
+        <p>
+
+        Edited:
+
+        ${note.edited}
+
+        </p>
+
+
+
+        <p>
+
+        ${note.content.length}
+
+        characters
+
+        </p>
+
+
+
+
+        <div class="card-buttons">
+
+
+
+        <button class="open-btn">
+
+        📖 Open
+
+        </button>
+
+
+
+
+        <button class="rename-btn">
+
+        ✏ Rename
+
+        </button>
+
+
+
+
+
+        <button class="favorite-btn">
+
+        ${note.favorite ? "☆ Unfavorite" : "⭐ Favorite"}
+
+        </button>
+
+
+
+
+
+        <button class="delete-btn">
+
+        🗑 Delete
+
+        </button>
+
+
+
+        </div>
+
+
+
+        `;
+
+
+
+
+
+
+
+
+        const openBtn =
+
+        card.querySelector(".open-btn");
+
+
+
+        openBtn.onclick = function(){
+
+
+            openNote(note.id);
+
+
+        };
+
+
+
+
+
+
+
+        const renameBtn =
+
+        card.querySelector(".rename-btn");
+
+
+
+        renameBtn.onclick = function(){
+
+
+            renameSavedNote(note.id);
+
+
+        };
+
+
+
+
+
+
+
+        const deleteBtn =
+
+        card.querySelector(".delete-btn");
+
+
+
+        deleteBtn.onclick = function(){
+
+
+            deleteNote(note.id);
+
+
+        };
+
+
+
+
+
+
+
+
+        const favoriteBtn =
+
+        card.querySelector(".favorite-btn");
+
+
+
+        favoriteBtn.onclick = function(){
+
+
+            toggleFavorite(note.id);
+
+
+
+            displaySavedNotes();
+
+
+            displayRecentNotes();
+
+
+        };
+
+
+
+
+
+
+        savedNotes.appendChild(card);
+
+
+
+    });
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ========================================
+// Live Search
+// ========================================
+
+
+if(searchInput){
+
+
+searchInput.addEventListener(
+
+"input",
+
+function(){
+
+
+    displaySavedNotes();
+
+
+}
+
 
 );
 
-});
-
-
-if(notes.length===0){
-
-
-savedNotes.innerText =
-"No saved notes.";
-
-
-return;
-
-
-}
-
-
-
-savedNotes.innerHTML = "";
-
-
-
-notes.forEach(
-(note,id)=>{
-
-
-
-const card =
-document.createElement("div");
-
-
-card.className =
-"note-card";
-
-
-
-card.innerHTML = `
-
-<h3>
-📘 ${note.title}
-</h3>
-
-
-<p>📁 ${note.folder}</p>
-
-<p>Created: ${note.created}</p>
-
-<p>Edited: ${note.edited}</p>
-
-<p>${note.content.length} characters</p>
-
-
-<div class="card-buttons">
-
-
-<button onclick="openNote(${note.id})">
-
-📖 Open
-
-</button>
-
-
-
-<button onclick="renameSavedNote(${note.id})">
-
-✏ Rename
-
-</button>
-
-
-
-<button onclick="deleteNote(${note.id})">
-
-🗑 Delete
-
-</button>
-
-
-</div>
-
-`;
-
-
-
-savedNotes.appendChild(card);
-
-
-
-}
-
-);
-
 
 }
 
@@ -541,96 +966,552 @@ savedNotes.appendChild(card);
 
 
 
-// ===============================
+// ========================================
 // Recent Notes
-// ===============================
+// ========================================
 
 
 function displayRecentNotes(){
 
 
-const recent =
-document.getElementById("recentNotes");
+
+    const recent =
+
+    document.getElementById(
+        "recentNotes"
+    );
 
 
 
-const notes =
-getNotes();
+    if(!recent){
+
+        return;
+
+    }
 
 
 
-if(notes.length===0){
 
 
-recent.innerText =
-"No saved notes yet.";
+    const notes =
+    getNotes();
 
 
-return;
+
+
+    if(notes.length === 0){
+
+
+
+        recent.innerHTML =
+
+        "No saved notes yet.";
+
+
+
+        return;
+
+
+    }
+
+
+
+
+
+
+    recent.innerHTML = "";
+
+
+
+
+
+
+
+    notes
+
+    .slice(0,3)
+
+    .forEach(note=>{
+
+
+
+
+
+        const card =
+
+        document.createElement("div");
+
+
+
+        card.className =
+        "note-card";
+
+
+
+        card.style.cursor =
+        "pointer";
+
+
+
+
+
+        card.innerHTML = `
+
+
+
+        <h3>
+
+        ${note.favorite ? "⭐" : "📘"}
+
+        ${note.title}
+
+        </h3>
+
+
+
+        <p>
+
+        📁 ${note.folder}
+
+        </p>
+
+
+
+        `;
+
+
+
+
+
+
+
+        card.onclick = function(){
+
+
+            openNote(note.id);
+
+
+        };
+
+
+
+
+
+        recent.appendChild(card);
+
+
+
+    });
+
 
 
 }
 
 
 
-recent.innerHTML = "";
 
 
 
-notes
-.slice(-3)
-.reverse()
-.forEach(
-(note)=>{
-
-
-const id =
-notes.idOf(note);
 
 
 
-const card =
-document.createElement("div");
+// ========================================
+// Open Note
+// ========================================
+
+
+function openNote(id){
 
 
 
-card.className =
-"note-card";
+    const note =
+
+    getNoteById(id);
 
 
 
-card.style.cursor =
-"pointer";
+    if(!note){
+
+        return;
+
+    }
 
 
 
-card.innerHTML = `
-
-<h3>
-📘 ${note.title}
-</h3>
-
-<p>
-${note.created}
-</p>
-
-`;
 
 
 
-card.onclick =
+    noteTitle.value =
+
+    note.title;
+
+
+
+
+
+    folderSelect.value =
+
+    note.folder;
+
+
+
+
+
+    output.value =
+
+    note.content;
+
+
+
+
+
+    currentNoteId =
+
+    note.id;
+
+
+
+
+
+
+    showPage(
+        "scanner"
+    );
+
+
+
+
+
+    status.innerText =
+
+    "Editing saved note.";
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ========================================
+// Delete Note
+// ========================================
+
+
+function deleteNote(id){
+
+
+
+    const confirmDelete =
+
+    confirm(
+
+    "Delete this note?"
+
+    );
+
+
+
+    if(!confirmDelete){
+
+        return;
+
+    }
+
+
+
+
+
+    removeNote(id);
+
+
+
+
+    displaySavedNotes();
+
+    displayRecentNotes();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ========================================
+// Rename Note
+// ========================================
+
+
+function renameSavedNote(id){
+
+
+
+    const note =
+
+    getNoteById(id);
+
+
+
+    if(!note){
+
+        return;
+
+    }
+
+
+
+
+
+
+    const newTitle =
+
+    prompt(
+
+    "New title:",
+
+    note.title
+
+    );
+
+
+
+
+
+
+
+    if(
+
+    newTitle &&
+
+    newTitle.trim() !== ""
+
+    ){
+
+
+
+        renameNote(
+
+            id,
+
+            newTitle.trim()
+
+        );
+
+
+
+        displaySavedNotes();
+
+        displayRecentNotes();
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+// ========================================
+// Initial Load
+// ========================================
+
+
+displaySavedNotes();
+
+displayRecentNotes();
+// ========================================
+// NoteUp v2.0
+// Final Connections
+// Part 3/3
+// ========================================
+
+
+
+
+
+// ========================================
+// Auto Save Draft
+// ========================================
+
+
+function saveDraft(){
+
+
+    const draft = {
+
+
+        title:
+
+        noteTitle.value,
+
+
+        folder:
+
+        folderSelect.value,
+
+
+        content:
+
+        output.value,
+
+
+        saved:
+
+        new Date().toLocaleString()
+
+
+    };
+
+
+
+    localStorage.setItem(
+
+        "noteup_draft",
+
+        JSON.stringify(draft)
+
+    );
+
+
+}
+
+
+
+
+
+
+
+function loadDraft(){
+
+
+
+    const draft =
+
+    JSON.parse(
+
+        localStorage.getItem(
+            "noteup_draft"
+        )
+
+    );
+
+
+
+    if(!draft){
+
+        return;
+
+    }
+
+
+
+
+
+    if(
+
+    draft.content &&
+
+    confirm(
+
+    "Restore unfinished note draft?"
+
+    )
+
+    ){
+
+
+
+        noteTitle.value =
+
+        draft.title || "";
+
+
+
+        folderSelect.value =
+
+        draft.folder || "General";
+
+
+
+        output.value =
+
+        draft.content;
+
+
+
+        status.innerText =
+
+        "Draft restored.";
+
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+// Auto save while typing
+
+
+if(output){
+
+
+output.addEventListener(
+
+"input",
+
 function(){
 
 
-openNote(note.id);
+    saveDraft();
 
 
-};
+}
+
+);
+
+
+}
 
 
 
-recent.appendChild(card);
 
+
+
+if(noteTitle){
+
+
+noteTitle.addEventListener(
+
+"input",
+
+function(){
+
+
+    saveDraft();
 
 
 }
@@ -646,180 +1527,212 @@ recent.appendChild(card);
 
 
 
-// ===============================
-// Open Note
-// ===============================
+// ========================================
+// Clear Scanner
+// ========================================
 
 
-window.openNote =
-function(id){
+function clearScanner(){
 
 
-const notes =
-getNotes();
 
+    if(imageInput){
 
+        imageInput.value = "";
 
-const note =
+    }
 
-getNoteById(id);
 
 
 
-noteTitle.value =
-note.title;
+    if(preview){
 
+        preview.src = "";
 
+        preview.style.display =
+        "none";
 
-output.value =
-note.content;
+    }
 
 
 
-showPage("scanner");
 
 
+    if(output){
 
-status.innerText =
-"Opened saved note.";
+        output.value = "";
 
+    }
 
 
-};
 
 
 
+    if(noteTitle){
 
+        noteTitle.value = "";
 
+    }
 
 
 
-// ===============================
-// Delete Note
-// ===============================
 
 
-window.deleteNote =
-function(id){
+    currentNoteId = null;
 
 
-removeNote(id);
 
+    imageFile = null;
 
 
-displaySavedNotes();
 
-displayRecentNotes();
+    status.innerText =
 
-
-
-};
-
-
-
-
-
-
-
-// ===============================
-// Rename Note
-// ===============================
-
-
-window.renameSavedNote =
-function(id){
-
-
-const notes =
-getNotes();
-
-
-
-const newTitle =
-prompt(
-
-"Enter a new title:",
-
-notes[id].title
-
-);
-
-
-
-if(
-newTitle &&
-newTitle.trim() !== ""
-){
-
-
-window.renameSavedNote =
-function(id){
-
-
-const note =
-getNoteById(id);
-
-
-
-const newTitle =
-prompt(
-"Enter a new title:",
-note.title
-);
-
-
-
-if(
-newTitle &&
-newTitle.trim() !== ""
-){
-
-
-note.title =
-newTitle.trim();
-
-
-note.edited =
-new Date().toLocaleString();
-
-
-
-updateNote(
-id,
-note
-);
-
-
-
-displaySavedNotes();
-
-displayRecentNotes();
-
-
-}
-
-}
+    "Waiting for image...";
 
 
 
 }
 
 
+
+
+
+
+
+
+// ========================================
+// Keyboard Shortcut
+// Ctrl + S Save
+// ========================================
+
+
+document.addEventListener(
+
+"keydown",
+
+function(event){
+
+
+
+    if(
+
+    event.ctrlKey &&
+
+    event.key === "s"
+
+    ){
+
+
+
+        event.preventDefault();
+
+
+
+        if(saveBtn){
+
+            saveBtn.click();
+
+        }
+
+
+    }
+
+
+
+}
+
+);
+
+
+
+
+
+
+
+
+// ========================================
+// Home Statistics
+// ========================================
+
+
+function updateHomeStats(){
+
+
+
+    const notes =
+
+    getNotes();
+
+
+
+    const totalNotes =
+
+    document.getElementById(
+        "totalNotes"
+    );
+
+
+
+    if(totalNotes){
+
+        totalNotes.innerText =
+        notes.length;
+
+    }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ========================================
+// Rename App Title
+// ========================================
+
+
+document.title =
+"NoteUp";
+
+
+
+
+
+
+// ========================================
+// Start Application
+// ========================================
+
+
+window.onload = function(){
+
+
+
+    showPage(
+        "home"
+    );
+
+
+
+    displaySavedNotes();
+
+
+    displayRecentNotes();
+
+
+    loadDraft();
+
+
+    updateHomeStats();
+
+
+
 };
-
-
-
-
-
-
-
-// ===============================
-// Start App
-// ===============================
-
-
-displaySavedNotes();
-
-displayRecentNotes();
-
-showPage("home");
