@@ -5,17 +5,20 @@
 const searchInput =
 document.getElementById("searchInput");
 
+
+if(searchInput){
+
 searchInput.addEventListener(
-
 "input",
-
 function(){
 
 displaySavedNotes();
 
+});
+
 }
 
-);
+
 
 function showPage(page){
 
@@ -459,7 +462,7 @@ savedNotes.innerHTML = "";
 
 
 notes.forEach(
-(note,index)=>{
+(note,id)=>{
 
 
 
@@ -581,8 +584,8 @@ notes
 (note)=>{
 
 
-const index =
-notes.indexOf(note);
+const id =
+notes.idOf(note);
 
 
 
@@ -608,7 +611,7 @@ card.innerHTML = `
 </h3>
 
 <p>
-${note.date}
+${note.created}
 </p>
 
 `;
@@ -649,7 +652,7 @@ recent.appendChild(card);
 
 
 window.openNote =
-function(index){
+function(id){
 
 
 const notes =
@@ -697,7 +700,7 @@ status.innerText =
 
 
 window.deleteNote =
-function(index){
+function(id){
 
 
 removeNote(id);
@@ -724,7 +727,7 @@ displayRecentNotes();
 
 
 window.renameSavedNote =
-function(index){
+function(id){
 
 
 const notes =
@@ -737,7 +740,7 @@ prompt(
 
 "Enter a new title:",
 
-notes[index].title
+notes[id].title
 
 );
 
@@ -749,14 +752,53 @@ newTitle.trim() !== ""
 ){
 
 
+window.renameSavedNote =
+function(id){
+
+
 const note =
 getNoteById(id);
+
+
+
+const newTitle =
+prompt(
+"Enter a new title:",
+note.title
+);
+
+
+
+if(
+newTitle &&
+newTitle.trim() !== ""
+){
+
+
+note.title =
+newTitle.trim();
+
+
+note.edited =
+new Date().toLocaleString();
+
+
+
+updateNote(
+id,
+note
+);
 
 
 
 displaySavedNotes();
 
 displayRecentNotes();
+
+
+}
+
+}
 
 
 
