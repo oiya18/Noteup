@@ -688,3 +688,364 @@ function moveNoteToFolder(id,folder){
 
 
 }
+
+// ========================================
+// NoteUp v2.2
+// Tags + Favorites System
+// ========================================
+
+
+
+// ========================================
+// Add Tag To Note
+// ========================================
+
+
+function addTag(id, tag){
+
+
+    const note =
+    getNoteById(id);
+
+
+
+    if(!note){
+
+        return;
+
+    }
+
+
+
+    if(!note.tags){
+
+        note.tags = [];
+
+    }
+
+
+
+    if(
+
+    tag.trim() !== ""
+
+    &&
+
+    !note.tags.includes(tag.trim())
+
+    ){
+
+
+        note.tags.push(
+
+            tag.trim()
+
+        );
+
+
+    }
+
+
+
+    updateNote(
+
+        id,
+
+        {
+
+            tags:
+
+            note.tags
+
+        }
+
+    );
+
+
+}
+
+
+
+
+
+
+
+// ========================================
+// Remove Tag From Note
+// ========================================
+
+
+function removeTag(id, tag){
+
+
+
+    const note =
+    getNoteById(id);
+
+
+
+    if(!note){
+
+        return;
+
+    }
+
+
+
+    note.tags =
+
+    note.tags.filter(
+
+        existingTag =>
+
+        existingTag !== tag
+
+    );
+
+
+
+    updateNote(
+
+        id,
+
+        {
+
+            tags:
+
+            note.tags
+
+        }
+
+    );
+
+
+}
+
+
+
+
+
+
+
+// ========================================
+// Toggle Favorite
+// ========================================
+
+
+function toggleFavorite(id){
+
+
+
+    const note =
+
+    getNoteById(id);
+
+
+
+    if(!note){
+
+        return;
+
+    }
+
+
+
+    updateNote(
+
+        id,
+
+        {
+
+
+            favorite:
+
+            !note.favorite
+
+
+        }
+
+    );
+
+
+}
+
+
+
+
+
+
+
+// ========================================
+// Get Favorite Notes
+// ========================================
+
+
+function getFavoriteNotes(){
+
+
+
+    return getNotes().filter(
+
+        note =>
+
+        note.favorite === true
+
+    );
+
+
+}
+
+
+
+
+
+
+
+// ========================================
+// Search Including Tags
+// ========================================
+
+
+function searchNotes(query){
+
+
+
+    query =
+
+    query
+
+    .toLowerCase()
+
+    .trim();
+
+
+
+
+    if(query === ""){
+
+
+        return getNotes();
+
+
+    }
+
+
+
+
+
+    return getNotes().filter(note=>{
+
+
+        return (
+
+
+
+            note.title
+
+            .toLowerCase()
+
+            .includes(query)
+
+
+
+
+            ||
+
+
+
+            note.folder
+
+            .toLowerCase()
+
+            .includes(query)
+
+
+
+
+            ||
+
+
+
+            note.content
+
+            .toLowerCase()
+
+            .includes(query)
+
+
+
+
+            ||
+
+
+
+            (note.tags || [])
+
+            .join(" ")
+
+            .toLowerCase()
+
+            .includes(query)
+
+
+
+        );
+
+
+    });
+
+
+
+}
+
+
+
+
+
+
+
+// ========================================
+// Get All Tags
+// ========================================
+
+
+function getAllTags(){
+
+
+
+    const tags = [];
+
+
+
+    getNotes().forEach(note=>{
+
+
+        if(note.tags){
+
+
+            note.tags.forEach(tag=>{
+
+
+                if(!tags.includes(tag)){
+
+
+                    tags.push(tag);
+
+
+                }
+
+
+            });
+
+
+        }
+
+
+    });
+
+
+
+    return tags;
+
+
+}

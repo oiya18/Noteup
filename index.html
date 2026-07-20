@@ -28,7 +28,11 @@
 Your Digital Study Companion
 </p>
 
+<button onclick="showPage('favorites')">
 
+⭐ Favorites
+
+</button>
 <nav>
 
 <button onclick="showPage('home')">
@@ -111,7 +115,16 @@ Recent Notes
 No saved notes yet.
 
 </div>
+<h2>
+⭐ Favorite Notes
+</h2>
 
+
+<div id="homeFavorites">
+
+No favorite notes yet.
+
+</div>
 
 </section>
 
@@ -137,6 +150,11 @@ No saved notes yet.
 type="text"
 id="noteTitle"
 placeholder="Note title (Example: Biology Chapter 5)"
+>
+<input
+type="text"
+id="tagInput"
+placeholder="Tags (Example: Exam, Review, Important)"
 >
 
 <label for="folderSelect">Folder</label>
@@ -336,6 +354,26 @@ placeholder="🔍 Search by title, folder, tags, or content..."
 <div id="savedNotes">
 
 No saved notes yet.
+
+</div>
+
+
+</section>
+
+<!-- FAVORITES PAGE -->
+
+<section id="favorites" class="page hidden">
+
+
+<h2>
+⭐ Favorite Notes
+</h2>
+
+
+
+<div id="favoriteNotes">
+
+No favorite notes yet.
 
 </div>
 

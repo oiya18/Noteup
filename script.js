@@ -80,6 +80,8 @@ document.getElementById("status");
 
 const noteTitle =
 document.getElementById("noteTitle");
+const tagInput =
+document.getElementById("tagInput");
 
 
 const folderSelect =
@@ -346,6 +348,11 @@ function(){
 // ========================================
 
 
+// ========================================
+// Save Notes
+// ========================================
+
+
 if(saveBtn){
 
 
@@ -375,15 +382,31 @@ function(){
 
 
 
+
     const title =
 
     noteTitle.value.trim();
 
 
 
+
     const folder =
 
     folderSelect.value;
+
+
+
+
+    const tags =
+
+    tagInput.value
+
+    .split(",")
+
+    .map(tag => tag.trim())
+
+    .filter(tag => tag !== "");
+
 
 
 
@@ -404,17 +427,26 @@ function(){
 
 
             title:
+
             title || "Untitled Note",
 
 
 
             folder:
+
             folder,
 
 
 
             content:
-            output.value
+
+            output.value,
+
+
+
+            tags:
+
+            tags
 
 
             }
@@ -425,6 +457,7 @@ function(){
 
 
         status.innerText =
+
         "Note updated!";
 
 
@@ -433,9 +466,15 @@ function(){
 
 
 
+
+
+    // Creating new note
+
     else{
 
 
+
+        const newNote =
 
         saveNote(
 
@@ -445,12 +484,34 @@ function(){
 
             output.value
 
-
         );
 
 
 
+        if(tags.length > 0){
+
+
+            updateNote(
+
+                newNote.id,
+
+                {
+
+                    tags:
+
+                    tags
+
+                }
+
+            );
+
+
+        }
+
+
+
         status.innerText =
+
         "Note saved!";
 
 
@@ -458,12 +519,22 @@ function(){
 
 
 
+
+
     currentNoteId = null;
+
 
 
     displaySavedNotes();
 
+
     displayRecentNotes();
+
+
+    displayFavorites();
+
+
+    displayHomeFavorites();
 
 
 
@@ -474,9 +545,7 @@ function(){
 
 
 }
-
-
-
+saveNote
 
 
 
@@ -770,6 +839,21 @@ function displaySavedNotes(){
         characters
 
         </p>
+        <p>
+
+🏷️
+
+${
+
+(note.tags || [])
+
+.map(tag=>"#" + tag)
+
+.join(" ")
+
+}
+
+</p>
 
 
 
@@ -906,24 +990,20 @@ moveBtn.onclick=function(){
         const favoriteBtn =
 
         card.querySelector(".favorite-btn");
+       favoriteBtn.onclick=function(){
+
+    toggleFavorite(note.id);
+
+    displaySavedNotes();
+
+    displayRecentNotes();
+
+    displayFavorites();
+
+};
 
 
-
-        favoriteBtn.onclick = function(){
-
-
-            toggleFavorite(note.id);
-
-
-
-            displaySavedNotes();
-
-
-            displayRecentNotes();
-
-
-        };
-
+        
 
 
 
@@ -2171,3 +2251,195 @@ function updateFolderDropdown(){
 displayFolders();
 
 updateFolderDropdown();
+
+// ========================================
+// Favorites Display
+// ========================================
+
+
+function displayFavorites(){
+
+
+    const favoriteArea =
+
+    document.getElementById(
+        "favoriteNotes"
+    );
+
+
+
+    if(!favoriteArea){
+
+        return;
+
+    }
+
+
+
+
+    const favorites =
+
+    getFavoriteNotes();
+
+
+
+
+
+    if(favorites.length === 0){
+
+
+        favoriteArea.innerHTML =
+
+        "No favorite notes yet.";
+
+
+        return;
+
+
+    }
+
+
+
+
+    favoriteArea.innerHTML = "";
+
+
+
+
+
+    favorites.forEach(note=>{
+
+
+        const card =
+
+        document.createElement("div");
+
+
+
+        card.className =
+        "note-card";
+
+
+
+        card.innerHTML = `
+
+        <h3>
+        ⭐ ${note.title}
+        </h3>
+
+        <p>
+        📁 ${note.folder}
+        </p>
+
+        <button>
+        📖 Open
+        </button>
+
+        `;
+
+
+
+        card.querySelector("button")
+
+        .onclick=function(){
+
+
+            openNote(note.id);
+
+
+        };
+
+
+
+        favoriteArea.appendChild(card);
+
+
+
+    });
+
+
+
+}
+
+
+
+
+
+
+
+// Home favorite display
+
+function displayHomeFavorites(){
+
+
+
+    const area =
+
+    document.getElementById(
+        "homeFavorites"
+    );
+
+
+
+    if(!area){
+
+        return;
+
+    }
+
+
+
+
+    const favorites =
+
+    getFavoriteNotes();
+
+
+
+
+
+    if(favorites.length===0){
+
+
+        area.innerHTML =
+
+        "No favorite notes yet.";
+
+
+        return;
+
+
+    }
+
+
+
+
+
+    area.innerHTML =
+
+    favorites
+
+    .slice(0,3)
+
+    .map(note=>
+
+
+    "⭐ " + note.title
+
+
+    )
+
+    .join("<br>");
+
+
+
+}
+
+
+
+
+
+
+displayFavorites();
+
+displayHomeFavorites();
