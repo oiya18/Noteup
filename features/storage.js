@@ -505,3 +505,186 @@ function removeTag(id,tag){
 
 
 }
+
+// ========================================
+// Folder Management
+// ========================================
+
+
+const FOLDER_KEY = "noteup_folders";
+
+
+
+
+// Get folders
+
+function getFolders(){
+
+
+    const folders =
+
+    JSON.parse(
+
+        localStorage.getItem(FOLDER_KEY)
+
+    );
+
+
+    if(!folders){
+
+        return [
+
+            "General"
+
+        ];
+
+    }
+
+
+    return folders;
+
+
+}
+
+
+
+
+// Save folders
+
+function saveFolders(folders){
+
+
+    localStorage.setItem(
+
+        FOLDER_KEY,
+
+        JSON.stringify(folders)
+
+    );
+
+
+}
+
+
+
+
+// Create folder
+
+function createFolder(name){
+
+
+
+    let folders =
+    getFolders();
+
+
+
+    if(
+
+    name &&
+
+    !folders.includes(name)
+
+    ){
+
+
+        folders.push(name);
+
+
+        saveFolders(folders);
+
+
+    }
+
+
+}
+
+
+
+
+
+
+// Delete folder
+
+function deleteFolder(name){
+
+
+
+    let folders =
+
+    getFolders();
+
+
+
+    folders =
+
+    folders.filter(
+
+        folder =>
+
+        folder !== name
+
+    );
+
+
+
+    saveFolders(folders);
+
+
+
+    // Move notes back to General
+
+
+    const notes =
+    getNotes();
+
+
+
+    notes.forEach(note=>{
+
+
+        if(note.folder === name){
+
+
+            note.folder =
+            "General";
+
+
+        }
+
+
+    });
+
+
+
+    saveNotes(notes);
+
+
+
+}
+
+
+
+
+
+
+// Move note folder
+
+function moveNoteToFolder(id,folder){
+
+
+
+    updateNote(
+
+        id,
+
+        {
+
+            folder: folder
+
+        }
+
+    );
+
+
+}

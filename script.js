@@ -1736,3 +1736,268 @@ window.onload = function(){
 
 
 };
+
+// ========================================
+// NoteUp v2.1
+// Folder System
+// ========================================
+
+
+
+const folderList =
+document.getElementById("folderList");
+
+
+const newFolderInput =
+document.getElementById("newFolderInput");
+
+
+const createFolderBtn =
+document.getElementById("createFolderBtn");
+
+
+
+
+// Display folders
+
+function displayFolders(){
+
+
+    if(!folderList){
+
+        return;
+
+    }
+
+
+    const folders =
+    getFolders();
+
+
+
+    folderList.innerHTML = "";
+
+
+
+    folders.forEach(folder=>{
+
+
+        const button =
+        document.createElement("button");
+
+
+
+        button.innerText =
+        "📁 " + folder;
+
+
+
+        button.onclick = function(){
+
+
+            filterByFolder(folder);
+
+
+        };
+
+
+
+        folderList.appendChild(button);
+
+
+    });
+
+
+}
+
+
+
+
+
+// Create folder button
+
+if(createFolderBtn){
+
+
+createFolderBtn.addEventListener(
+
+"click",
+
+function(){
+
+
+    const name =
+    newFolderInput.value.trim();
+
+
+
+    if(name===""){
+
+        return;
+
+    }
+
+
+
+    createFolder(name);
+
+
+
+    newFolderInput.value = "";
+
+
+
+    updateFolderDropdown();
+
+
+    displayFolders();
+
+
+});
+
+
+}
+
+
+
+
+
+
+// Filter notes by folder
+
+function filterByFolder(folder){
+
+
+    const notes =
+
+    getNotes().filter(
+
+        note=>
+
+        note.folder === folder
+
+    );
+
+
+
+    savedNotes.innerHTML = "";
+
+
+
+    notes.forEach(note=>{
+
+
+        const card =
+
+        document.createElement("div");
+
+
+
+        card.className =
+        "note-card";
+
+
+
+        card.innerHTML = `
+
+        <h3>
+        📘 ${note.title}
+        </h3>
+
+        <p>
+        📁 ${note.folder}
+        </p>
+
+        <button>
+        📖 Open
+        </button>
+
+        `;
+
+
+
+        card.querySelector("button")
+
+        .onclick=function(){
+
+            openNote(note.id);
+
+        };
+
+
+
+        savedNotes.appendChild(card);
+
+
+
+    });
+
+
+}
+
+
+
+
+
+
+
+// Update scanner folder dropdown
+
+function updateFolderDropdown(){
+
+
+    if(!folderSelect){
+
+        return;
+
+    }
+
+
+
+    const folders =
+    getFolders();
+
+
+
+    folderSelect.innerHTML = "";
+
+
+
+    folders.forEach(folder=>{
+
+
+        const option =
+        document.createElement("option");
+
+
+
+        option.value =
+        folder;
+
+
+
+        option.innerText =
+        folder;
+
+
+
+        folderSelect.appendChild(option);
+
+
+    });
+
+
+
+}
+
+
+
+
+
+
+
+// Start folders
+
+displayFolders();
+
+updateFolderDropdown();
